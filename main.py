@@ -19,7 +19,32 @@ def get_fact():
 
 @app.route('/')
 def home():
-    return "FILL ME!"
+    fact = get_fact()
+
+    url = 'https://hidden-journey-62459.herokuapp.com/piglatinize/'
+    # 'https://hidden-journey-62459.herokuapp.com/'
+    data = {'input_text': fact}
+
+    response = requests.post(url, data=data)
+
+    url = response.url
+    response = requests.get(url)
+
+    soup = BeautifulSoup(response.content, "html.parser")
+    quote = soup.find("body")
+
+    print(f'{quote}\n')
+
+    print(type(quote))
+    body = str(soup.body)
+    print()
+    h2_tag = '/h2>'
+    start_pos = body.find(h2_tag)
+    start_pos += len(h2_tag)
+    end_pos = body.find('</body')
+    piglatin = body[start_pos: end_pos].strip()
+
+    return f'<a href="{url}">{piglatin}</a>'
 
 
 if __name__ == "__main__":
